@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app/src:/usr/src/app
+      - ./app/entrypoint.sh:/entrypoint/entrypoint.sh
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=nestjs
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=MOTOR_INSURANCE_WEBSITE
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes: 
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: nestjs
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: MOTOR_INSURANCE_WEBSITE
