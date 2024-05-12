@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
+import { Product } from '@/products/product.entity'
 
 export const getTypeOrmConfig = async (): Promise<TypeOrmModuleOptions> => {
     return {
@@ -8,7 +9,7 @@ export const getTypeOrmConfig = async (): Promise<TypeOrmModuleOptions> => {
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
-        entities: [],
+        entities: [Product],
         synchronize: true,
     }
 }
