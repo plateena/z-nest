@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./app/src:/usr/src/app
+      - ./app/nestjs:/usr/src/app
       - ./app/entrypoint.sh:/entrypoint/entrypoint.sh
     environment:
       - POSTGRES_HOST=db
