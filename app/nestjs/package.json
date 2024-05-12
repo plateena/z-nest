@@ -71,7 +71,7 @@
             "^.+\\.(t|j)s$": "ts-jest"
         },
         "collectCoverageFrom": [
-            "<rootDir>/nestjs/src/**/*.(t|j)s"
+            "src/**/*.(t|j)s"
         ],
         "coverageDirectory": "../coverage",
         "testEnvironment": "node"

@@ -19,7 +19,9 @@ describe('', () => {
     })
 
     afterEach(async () => {
-        await app.close()
+        if (app) {
+            // await app.close()
+        }
     })
 
     it('can post to create product', async () => {
@@ -34,8 +36,7 @@ describe('', () => {
             .send(createProductDto)
 
         expect(response.statusCode).toBe(201)
-
-        const productRepository = getRepository(Product)
+         const productRepository = getRepository(Product)
         const createdProduct = await productRepository.findOne({ where: { code: createProductDto.code } });
         expect(createdProduct).toBeDefined();
 

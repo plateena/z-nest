@@ -3,6 +3,7 @@ import { Product } from '@/products/product.entity'
 
 export const getTypeOrmConfig = async (): Promise<TypeOrmModuleOptions> => {
     return {
+        name: 'production',
         type: process.env.DB_CONNECTION as 'postgres' | 'mysql',
         host: process.env.DB_HOST,
         port: parseInt(process.env.DB_PORT),
