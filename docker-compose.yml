@@ -22,8 +22,20 @@ services:
     ports:
       - "5432:5432"
     volumes: 
-      - ./db:/var/lib/postgresql/data
+      - ./db/prod:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: nestjs
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: MOTOR_INSURANCE_WEBSITE
+
+  db-test:
+    image: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes: 
+      - ./db/test:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: nestjs
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: NESTJS_TEST

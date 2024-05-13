@@ -4,13 +4,13 @@ import { Product } from './product.entity'
 import { Repository } from 'typeorm'
 import { PageDto } from '@/page.dto'
 
-export interface ProductData {
+export interface IProductData {
     code: string
     description: string
     location: string
     price: number
 }
-export interface ProductObj extends ProductData {
+export interface IProductObj extends IProductData {
     id: number
 }
 
@@ -35,7 +35,7 @@ export class ProductService {
         return new PageDto<Product>(data , total)
     }
 
-    async create(productData: ProductData): Promise<Product> {
+    async create(productData: IProductData): Promise<Product> {
         const product = this.productRepository.create(productData)
         return this.productRepository.save(product)
     }
