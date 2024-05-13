@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Product } from './product.entity'
 import { Repository } from 'typeorm'
 import { PageDataDto } from '@/page.dto'
+import { setQueryPagination } from '@/utils/set-query-pagination'
 
 export interface IProductData {
     code: string
@@ -48,7 +49,7 @@ export class ProductService {
     async find(queryParams?: IProductQueryParams) {
         let query: IQueryBuilderObj = {}
 
-        query = setPaginationQueryBuilder(query, queryParams)
+        query = setQueryPagination(query, queryParams)
 
         if (queryParams?.filter?.code) {
             createWhere(query)
@@ -68,19 +69,6 @@ export class ProductService {
         const product = this.productRepository.create(productData)
         return this.productRepository.save(product)
     }
-}
-
-const setPaginationQueryBuilder = (
-    query: IQueryBuilderObj,
-    queryParams: IProductQueryParams,
-): IQueryBuilderObj => {
-    if (queryParams?.page) {
-        query.page = queryParams.page
-        query.skip = queryParams.page - 1
-        query.take = queryParams.perPage || 5
-    }
-
-    return query
 }
 
 const createWhere = (query: IQueryBuilderObj): IQueryBuilderObj => {
