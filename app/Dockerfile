@@ -2,11 +2,11 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-COPY ./src/package*.json .
+COPY ./nestjs/package*.json .
 
 RUN npm install
 
-COPY ./src .
+COPY ./nestjs .
 
 EXPOSE 3000
 
