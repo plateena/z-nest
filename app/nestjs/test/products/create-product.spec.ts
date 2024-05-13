@@ -36,15 +36,12 @@ describe('', () => {
             .send(createProductDto)
 
         expect(response.statusCode).toBe(201)
-         const productRepository = getRepository(Product)
-        const createdProduct = await productRepository.findOne({ where: { code: createProductDto.code } });
-        expect(createdProduct).toBeDefined();
 
-        // expect(response.body).toHaveProperty('id')
-        // expect(response.body.code).toBe(createProductDto.code)
-        // expect(response.body.description).toBe(createProductDto.description)
-        // expect(response.body.location).toBe(createProductDto.location)
-        // expect(response.body.price).toBe(createProductDto.price)
+        expect(response.body).toHaveProperty('id')
+        expect(response.body.code).toBe(createProductDto.code)
+        expect(response.body.description).toBe(createProductDto.description)
+        expect(response.body.location).toBe(createProductDto.location)
+        expect(response.body.price).toBe(createProductDto.price)
     })
 
     it('can validate error product data', async () => {
