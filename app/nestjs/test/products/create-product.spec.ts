@@ -1,6 +1,6 @@
 import * as request from 'supertest'
 import { ProductService } from '@/products/product.service'
-import { createApp } from './../create-app'
+import { createApp } from '@test/create-app'
 import { INestApplication } from '@nestjs/common'
 import { TestingModuleBuilder } from '@nestjs/testing'
 

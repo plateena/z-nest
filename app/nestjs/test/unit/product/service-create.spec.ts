@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common'
 import { DataSource } from 'typeorm'
 import { ProductService } from '@/products/product.service'
 
-describe('ProductService (Integration)', () => {
+describe('ProductService (create)', () => {
     let app: INestApplication
     let connection: DataSource
 
