@@ -1,9 +1,9 @@
 import { AppModule } from '@/app.module'
-import { IProductData, ProductService } from '@/products/product.service'
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { DataSource } from 'typeorm'
 import { faker } from '@faker-js/faker'
+import { ProductService } from '@/products/product.service'
 
 describe('Product Service (find)', () => {
     let app: INestApplication

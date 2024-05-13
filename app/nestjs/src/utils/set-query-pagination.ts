@@ -1,8 +1,3 @@
-import {
-    IProductQueryParams,
-    IQueryBuilderObj,
-} from '@/products/product.service'
-
 export const setQueryPagination = (
     query: IQueryBuilderObj,
     queryParams: IProductQueryParams,

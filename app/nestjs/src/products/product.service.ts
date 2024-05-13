@@ -5,40 +5,6 @@ import { Repository } from 'typeorm'
 import { PageDataDto } from '@/page.dto'
 import { setQueryPagination } from '@/utils/set-query-pagination'
 
-export interface IProductData {
-    code: string
-    description: string
-    location: string
-    price: number
-}
-export interface IProductObj extends IProductData {
-    id: number
-}
-
-export interface IPaginationQueryParams {
-    page?: number
-    perPage?: number
-}
-
-export interface IProductQueryParams extends IPaginationQueryParams {
-    filter?: {
-        code?: string
-        location?: string
-    }
-    'filter[code]'?: string
-    'filter[location]'?: string
-}
-
-export interface IQueryBuilderObj {
-    skip?: number
-    take?: number
-    page?: number
-    where?: {
-        location?: string
-        code?: string
-    }
-}
-
 @Injectable()
 export class ProductService {
     constructor(

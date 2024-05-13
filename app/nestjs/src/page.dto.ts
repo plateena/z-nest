@@ -5,7 +5,6 @@ import {
     IsNumberString,
     IsOptional,
 } from 'class-validator'
-import { IQueryBuilderObj } from './products/product.service'
 
 export class PageDto {
     @IsNumber() @IsOptional()
