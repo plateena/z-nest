@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Product } from './product.entity'
 import { Repository } from 'typeorm'
+import { PageDto } from '@/page.dto'
+import { ApiBadRequestResponse } from '@nestjs/swagger'
 
 export interface ProductData {
     code: string
@@ -21,7 +23,17 @@ export class ProductService {
     ) {}
 
     async find() {
-        return this.productRepository.find()
+        let page = 2
+        let perPage = 2
+
+        let offset = (page - 1) * perPage
+        const [ data , total ] = await this.productRepository
+            .createQueryBuilder()
+            .offset(offset)
+            .limit(perPage)
+            .getManyAndCount()
+
+        return new PageDto<Product>(data , total)
     }
 
     async create(productData: ProductData): Promise<Product> {

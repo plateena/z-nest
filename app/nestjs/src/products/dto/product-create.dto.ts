@@ -1,16 +1,4 @@
-import { IsNotEmpty, IsNumberString, IsNumber } from "class-validator";
+import { ProductData } from '@/products/product.data'
 
-export class CreateProductDto {
-    @IsNotEmpty()
-    code: string
-
-    @IsNotEmpty()
-    description: string
-
-    @IsNotEmpty()
-    location: string
-
-    @IsNotEmpty()
-    @IsNumber()
-    price: number
+export class CreateProductDto extends ProductData {
 }
