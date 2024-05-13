@@ -2,8 +2,6 @@ import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as request from 'supertest'
 import { AppModule } from '@/app.module'
-import { getRepository } from 'typeorm'
-import { Product } from '@/products/product.entity'
 
 describe('', () => {
     let app: INestApplication
@@ -58,6 +56,9 @@ describe('', () => {
         )
         expect(response.body.message).toContain('location should not be empty')
         expect(response.body.message).toContain('price should not be empty')
+        expect(response.body.message).toContain(
+            'price must be a number conforming to the specified constraints',
+        )
     })
 
     it('can validate price is number', async () => {

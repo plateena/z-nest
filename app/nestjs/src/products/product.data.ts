@@ -9,6 +9,7 @@ export class ProductData {
         example: 1000
     })
     @Column()
+    @IsNotEmpty()
     code: string
 
     @ApiProperty({
@@ -16,12 +17,14 @@ export class ProductData {
         example: "Sedan"
     })
     @Column()
+    @IsNotEmpty()
     description: string
 
     @ApiProperty({
         description: "The product location",
         example: "West Malaysia"
     })
+    @IsNotEmpty()
     @Column()
     location: string
 
