@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Product } from './product.entity'
 import { Repository } from 'typeorm'
 import { PageDto } from '@/page.dto'
-import { ApiBadRequestResponse } from '@nestjs/swagger'
 
 export interface ProductData {
     code: string

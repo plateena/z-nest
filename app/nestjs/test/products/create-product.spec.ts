@@ -1,25 +1,14 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common'
-import { Test, TestingModule } from '@nestjs/testing'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
+import { ProductService } from '@/products/product.service'
+import { createApp } from './../create-app'
+import { INestApplication } from '@nestjs/common'
+import { TestingModuleBuilder } from '@nestjs/testing'
 
 describe('', () => {
     let app: INestApplication
 
-    beforeEach(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile()
-
-        app = moduleFixture.createNestApplication()
-        app.useGlobalPipes(new ValidationPipe())
-        await app.init()
-    })
-
-    afterEach(async () => {
-        if (app) {
-            // await app.close()
-        }
+    beforeAll(async () => {
+        app = await createApp()
     })
 
     it('can post to create product', async () => {
@@ -29,6 +18,16 @@ describe('', () => {
             location: 'West Malaysia',
             price: 300.0,
         }
+
+        app = await createApp((b: TestingModuleBuilder) => {
+            b.overrideProvider(ProductService).useValue({
+                create: () => {
+                    return { id: 1, ...createProductDto }
+                },
+            })
+            return b
+        })
+
         const response = await request(app.getHttpServer())
             .post('/api/v1/product')
             .send(createProductDto)
