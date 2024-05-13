@@ -1,9 +1,8 @@
-import { Injectable, Req } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Product } from './product.entity'
 import { Repository } from 'typeorm'
-import { PageDto } from '@/page.dto'
-import { Router } from 'express'
+import { PageDataDto } from '@/page.dto'
 
 export interface IProductData {
     code: string
@@ -21,6 +20,10 @@ export interface IPaginationQueryParams {
 }
 
 export interface IProductQueryParams extends IPaginationQueryParams {
+    filter?: {
+        code?: string
+        location?: string
+    }
     'filter[code]'?: string
     'filter[location]'?: string
 }
@@ -28,6 +31,7 @@ export interface IProductQueryParams extends IPaginationQueryParams {
 export interface IQueryBuilderObj {
     skip?: number
     take?: number
+    page?: number
     where?: {
         location?: string
         code?: string
@@ -41,23 +45,23 @@ export class ProductService {
         public readonly productRepository: Repository<Product>,
     ) {}
 
-    async find(@Req() queryParams?: IProductQueryParams) {
+    async find(queryParams?: IProductQueryParams) {
         let query: IQueryBuilderObj = {}
 
         query = setPaginationQueryBuilder(query, queryParams)
 
-        if (queryParams && queryParams['filter[code]']) {
+        if (queryParams?.filter?.code) {
             createWhere(query)
-            query.where.code = queryParams['filter[code]']
+            query.where.code = queryParams.filter.code
         }
 
-        if (queryParams && queryParams['filter[location]']) {
+        if (queryParams?.filter?.location) {
             createWhere(query)
-            query.where.location = queryParams['filter[location]']
+            query.where.location = queryParams.filter.location
         }
 
         const [data, total] = await this.productRepository.findAndCount(query)
-        return new PageDto<Product>(data, total, query)
+        return new PageDataDto<Product>(data, total, query)
     }
 
     async create(productData: IProductData): Promise<Product> {
@@ -71,7 +75,7 @@ const setPaginationQueryBuilder = (
     queryParams: IProductQueryParams,
 ): IQueryBuilderObj => {
     if (queryParams?.page) {
-        let offset = (queryParams.page - 1) * (queryParams.perPage || 5)
+        query.page = queryParams.page
         query.skip = queryParams.page - 1
         query.take = queryParams.perPage || 5
     }

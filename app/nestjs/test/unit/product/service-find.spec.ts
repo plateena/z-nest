@@ -1,10 +1,9 @@
 import { AppModule } from '@/app.module'
 import { IProductData, ProductService } from '@/products/product.service'
 import { INestApplication } from '@nestjs/common'
-import { Test, TestingModule, TestingModuleBuilder } from '@nestjs/testing'
+import { Test, TestingModule } from '@nestjs/testing'
 import { DataSource } from 'typeorm'
 import { faker } from '@faker-js/faker'
-import { Product } from '@/products/product.entity'
 
 describe('Product Service (find)', () => {
     let app: INestApplication
@@ -63,7 +62,7 @@ describe('Product Service (find)', () => {
     })
 
     it('can find by code', async () => {
-        let rs = await productService.find({ 'filter[code]': data[0].code })
+        let rs = await productService.find({ filter: { code: data[0].code } })
 
         // need to conver price to string becauuse the result json in string
         let check = convertPriceToString(data[0])
@@ -78,7 +77,7 @@ describe('Product Service (find)', () => {
 
     it('can find by location', async () => {
         let rs = await productService.find({
-            'filter[location]': data[0].location,
+            filter: { location: data[0].location },
         })
         // need to conver price to string becauuse the result json in string
         let check = convertPriceToString(data[0])
@@ -93,8 +92,10 @@ describe('Product Service (find)', () => {
 
     it('can find by both location and code', async () => {
         let rs = await productService.find({
-            'filter[location]': data[0].location,
-            'filter[code]': data[0].code,
+            filter: {
+                location: data[0].location,
+                code: data[0].code,
+            },
         })
 
         // need to conver price to string becauuse the result json in string
@@ -113,6 +114,6 @@ describe('Product Service (find)', () => {
     })
 })
 
-function convertPriceToString(data) {
+function convertPriceToString(data: IProductData) {
     return { ...data, price: data.price.toFixed(2).toString() }
 }

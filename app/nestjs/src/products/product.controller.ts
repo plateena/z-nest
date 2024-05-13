@@ -1,13 +1,15 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, ValidationPipe } from '@nestjs/common'
 import { CreateProductDto } from './dto/product-create.dto'
-import { ProductService } from './product.service'
 import {
-    ApiBadRequestResponse,
+    ProductService,
+} from './product.service'
+import {
     ApiBearerAuth,
     ApiOperation,
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger'
+import { ProductQueryParamsDto } from '@/products/dto/product-query-params.dto'
 
 @ApiTags('Products')
 @Controller('product')
@@ -19,8 +21,8 @@ export class ProductsController {
         description: 'Find product',
     })
     @Get()
-    async find() {
-        return await this.productService.find()
+    async find(@Query(new ValidationPipe()) queryParams: ProductQueryParamsDto) {
+        return await this.productService.find(queryParams)
     }
 
     @ApiOperation({ summary: 'Create product' })
@@ -28,7 +30,7 @@ export class ProductsController {
     @ApiResponse({
         status: 201,
         description: 'Successfully create new product',
-        type: CreateProductDto
+        type: CreateProductDto,
     })
     @Post()
     create(@Body() createProductDto: CreateProductDto) {

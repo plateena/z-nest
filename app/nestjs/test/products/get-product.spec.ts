@@ -20,9 +20,7 @@ describe('Get /product', () => {
             return builder
         })
 
-        const response = await request(app.getHttpServer()).get(
-            '/api/v1/product',
-        )
+        const response = await request(app.getHttpServer()).get( '/api/v1/product')
 
         expect(response.statusCode).toBe(200)
         expect(response.body).toHaveProperty('data')
