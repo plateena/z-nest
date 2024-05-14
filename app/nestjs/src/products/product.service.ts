@@ -45,7 +45,7 @@ export class ProductService {
         return await this.productRepository.findOneBy({ id })
     }
 
-    async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product | Boolean> {
+    async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
         let original = await this.productRepository.findOneBy({ id })
 
         if(!original) {

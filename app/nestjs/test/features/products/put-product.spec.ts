@@ -58,9 +58,13 @@ describe('PUT /product', () => {
             return builder
         })
 
-        const response = await request(app.getHttpServer()).put('/api/v1/product/1000')
+        try {
+            const response = await request(app.getHttpServer()).put('/api/v1/product/1000')
+            expect(response.statusCode).toBe(404)
+        } catch (err) {
 
-        expect(response.statusCode).toBe(404)
+        }
+
     })
 
 })

@@ -1,6 +1,6 @@
 import { AppModule } from '@/app.module'
 import { DataSource } from 'typeorm'
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, NotFoundException } from '@nestjs/common'
 import { ProductFactory } from '@test/factories/product.factory'
 import { ProductService } from '@/products/product.service'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -44,13 +44,23 @@ describe('Product Service (edit)', () => {
 
     it('can edit the product', async () => {
         // to make sure others data are not udpated
-        data[1] = await productService.updateProduct(data[1].id, { price: 9000 })
+        data[1] = await productService.updateProduct(data[1].id, {
+            price: 9000,
+        })
         const editPrice = 3000
-        const result = await productService.updateProduct(data[0].id, { price: editPrice })
+        const result = await productService.updateProduct(data[0].id, {
+            price: editPrice,
+        })
         let expectedResult = { ...data[0], price: editPrice }
         expect(result).toMatchObject(expectedResult)
 
         // make sure the data not change
         expect(data[1].price).not.toEqual(expectedResult.price)
+    })
+
+    it("can't react to product not found", async () => {
+        await expect(productService.updateProduct(10000, {})).rejects.toThrow(
+            NotFoundException,
+        )
     })
 })
