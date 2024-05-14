@@ -2,15 +2,14 @@ import { AppModule } from '@/app.module'
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { DataSource } from 'typeorm'
-import { faker } from '@faker-js/faker'
 import { ProductService } from '@/products/product.service'
 import { ProductFactory } from '@test/factories/product.factory'
 
-describe('Product Service (find)', () => {
+describe('Product Service - Find Product', () => {
     let app: INestApplication
     let connection: DataSource
     let productService: ProductService
-    let data: IProductData[] = []
+    let testData: any[]
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,16 +17,15 @@ describe('Product Service (find)', () => {
         }).compile()
 
         app = moduleFixture.createNestApplication()
-        productService = app.get<ProductService>(ProductService)
+        productService = moduleFixture.get<ProductService>(ProductService)
         await app.init()
 
         connection = moduleFixture.get<DataSource>(DataSource)
     })
 
     beforeEach(async () => {
-        // clear data
-        data = []
-        data = (await ProductFactory(productService, 10, true)) || []
+        await connection.synchronize(true)
+        testData = (await ProductFactory(productService, 10, true)) || []
     })
 
     afterEach(async () => {
@@ -38,69 +36,60 @@ describe('Product Service (find)', () => {
         await app.close()
     })
 
-    it('can find all data', async () => {
-        let rs = await productService.find()
-
-        expect(rs.data).toHaveLength(10)
+    it('should find all products', async () => {
+        const result = await productService.find()
+        expect(result.data).toHaveLength(10)
     })
 
-    it('can set per page data', async () => {
-        let rs = await productService.find({ page: 1, perPage: 5 })
-        expect(rs.data).toHaveLength(5)
+    it('should limit results per page', async () => {
+        const result = await productService.find({ page: 1, perPage: 5 })
+        expect(result.data).toHaveLength(5)
     })
 
-    it('can find by code', async () => {
-        let rs = await productService.find({ productCode: data[0].productCode })
-
-        // need to conver price to string becauuse the result json in string
-        let check = convertPriceToString(data[0])
-
-        expect(rs.data).toContainEqual(expect.objectContaining(check))
-
-        //  make sure our result match found result
-        expect(rs.data).toHaveLength(
-            data.filter((product) => product.productCode == data[0].productCode)
+    it('should find products by product code', async () => {
+        const product = testData[0]
+        const result = await productService.find({
+            productCode: product.productCode,
+        })
+        expect(result.data).toContainEqual(
+            expect.objectContaining(convertPriceToString(product)),
+        )
+        expect(result.data).toHaveLength(
+            testData.filter((p) => p.productCode === product.productCode)
                 .length,
         )
     })
 
-    it('can find by location', async () => {
-        let rs = await productService.find({
-            location: data[0].location,
-        })
-        // need to conver price to string becauuse the result json in string
-        let check = convertPriceToString(data[0])
-        expect(rs.data).toContainEqual(expect.objectContaining(check))
-
-        //  make sure our result match found result
-        expect(rs.data).toHaveLength(
-            data.filter((product) => product.location == data[0].location)
-                .length,
+    it('should find products by location', async () => {
+        const product = testData[0]
+        const result = await productService.find({ location: product.location })
+        expect(result.data).toContainEqual(
+            expect.objectContaining(convertPriceToString(product)),
+        )
+        expect(result.data).toHaveLength(
+            testData.filter((p) => p.location === product.location).length,
         )
     })
 
-    it('can find by both location and code', async () => {
-        let rs = await productService.find({
-                location: data[0].location,
-                productCode: data[0].productCode,
+    it('should find products by both location and product code', async () => {
+        const product = testData[0]
+        const result = await productService.find({
+            productCode: product.productCode,
+            location: product.location,
         })
-
-        // need to conver price to string becauuse the result json in string
-        let check = convertPriceToString(data[0])
-        expect(rs.data).toContainEqual(expect.objectContaining(check))
-
-        //  make sure our result match found result
-        expect(rs.data).toHaveLength(
-            data.filter((product) => {
-                return (
-                    product.location == data[0].location &&
-                    product.productCode == data[0].productCode
-                )
-            }).length,
+        expect(result.data).toContainEqual(
+            expect.objectContaining(convertPriceToString(product)),
+        )
+        expect(result.data).toHaveLength(
+            testData.filter(
+                (p) =>
+                    p.productCode === product.productCode &&
+                    p.location === product.location,
+            ).length,
         )
     })
 })
 
-function convertPriceToString(data: IProductData) {
+function convertPriceToString(data: any) {
     return { ...data, price: data.price.toFixed(2).toString() }
 }

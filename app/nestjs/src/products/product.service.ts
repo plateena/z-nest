@@ -1,67 +1,66 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Product } from './product.entity'
-import { Repository } from 'typeorm'
-import { PageDataDto } from '@/page.dto'
-import { setQueryPagination } from '@/utils/set-query-pagination'
-import { ProductData } from './product.data'
-import { UpdateProductDto } from './dto/product-update.dto'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from './product.entity';
+import { PageDataDto } from '@/page.dto';
+import { setQueryPagination } from '@/utils/set-query-pagination';
+import { UpdateProductDto } from './dto/product-update.dto';
 
 @Injectable()
 export class ProductService {
     constructor(
         @InjectRepository(Product)
-        public readonly productRepository: Repository<Product>,
+        private readonly productRepository: Repository<Product>,
     ) {}
 
-    async find(queryParams?: IProductQueryParams) {
-        let query: IQueryBuilderObj = {}
+    async find(queryParams?: IProductQueryParams): Promise<PageDataDto<Product>> {
+        let query: IQueryBuilderObj = {};
 
-        // set the pagination quer
-        query = setQueryPagination(query, queryParams)
+        // Set pagination query
+        query = setQueryPagination(query, queryParams);
 
         if (queryParams?.productCode) {
-            createWhere(query)
-            query.where.productCode = queryParams.productCode
+            createWhere(query);
+            query.where.productCode = queryParams.productCode;
         }
 
         if (queryParams?.location) {
-            createWhere(query)
-            query.where.location = queryParams.location
+            createWhere(query);
+            query.where.location = queryParams.location;
         }
 
-        const [data, total] = await this.productRepository.findAndCount(query)
+        const [data, total] = await this.productRepository.findAndCount(query);
 
-        // return with pageination data
-        return new PageDataDto<Product>(data, total, query)
+        // Return data with pagination information
+        return new PageDataDto<Product>(data, total, query);
     }
 
     async create(productData: IProductData): Promise<Product> {
-        const product = this.productRepository.create(productData)
-        return this.productRepository.save(product)
+        const product = this.productRepository.create(productData);
+        return this.productRepository.save(product);
     }
 
     async findOne(id: number): Promise<Product> {
-        return await this.productRepository.findOneBy({ id })
+        const product = await this.productRepository.findOneBy({id});
+        if (!product) {
+            throw new NotFoundException('Product not found');
+        }
+        return product;
     }
 
     async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
-        let original = await this.productRepository.findOneBy({ id })
+        const product = await this.findOne(id);
+        return this.productRepository.save({ ...product, ...updateProductDto });
+    }
 
-        if(!original) {
-            throw new NotFoundException('Product not found')
-        }
-
-        return await this.productRepository.save({
-            ...original,
-            ...updateProductDto,
-        })
+    async deleteProduct(id: number): Promise<void> {
+        const product = await this.findOne(id);
+        await this.productRepository.remove(product);
     }
 }
 
-const createWhere = (query: IQueryBuilderObj): IQueryBuilderObj => {
+const createWhere = (query: IQueryBuilderObj): void => {
     if (!query.where) {
-        query.where = {}
+        query.where = {};
     }
-    return query
-}
+};

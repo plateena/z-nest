@@ -1,39 +1,50 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber } from 'class-validator'
-import { Entity, Column } from 'typeorm'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('products')
 export class ProductData {
     @ApiProperty({
-        description: "The product code",
-        example: 1000
+        description: 'The product ID',
+        example: 1,
     })
-    @Column()
-    @IsNotEmpty()
-    productCode: string
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @ApiProperty({
-        description: "The product description",
-        example: "Sedan"
+        description: 'The product code',
+        example: '1000',
     })
     @Column()
     @IsNotEmpty()
-    description: string
+    @IsString()
+    productCode: string;
 
     @ApiProperty({
-        description: "The product location",
-        example: "West Malaysia"
+        description: 'The product description',
+        example: 'Sedan',
     })
-    @IsNotEmpty()
     @Column()
-    location: string
+    @IsNotEmpty()
+    @IsString()
+    description: string;
+
+    @ApiProperty({
+        description: 'The product location',
+        example: 'West Malaysia',
+    })
+    @Column()
+    @IsNotEmpty()
+    @IsString()
+    location: string;
 
     @ApiProperty({
         description: 'The product price',
         example: 100,
     })
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
     @IsNotEmpty()
     @IsNumber()
-    @Column({ type: 'decimal', precision: 10, scale: 2 })
-    price: number
+    @Min(0, { message: 'Price must be a positive number' })
+    price: number;
 }

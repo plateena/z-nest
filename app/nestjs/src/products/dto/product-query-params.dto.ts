@@ -4,16 +4,16 @@ import { IsOptional, IsString } from "class-validator";
 
 export class ProductQueryParamsDto extends PageDto {
     @ApiPropertyOptional({
-        description: "Filter by code"
+        description: "Filter by product code"
     })
     @IsOptional()
     @IsString()
-    readonly 'filter[code]': string
+    readonly productCode?: string;
 
     @ApiPropertyOptional({
         description: "Filter by location",
     })
     @IsOptional()
     @IsString()
-    readonly 'filter[location]': string
+    readonly location?: string;
 }

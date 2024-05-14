@@ -5,11 +5,11 @@ import { ProductFactory } from '@test/factories/product.factory'
 import { ProductService } from '@/products/product.service'
 import { Test, TestingModule } from '@nestjs/testing'
 
-describe('Product Service (edit)', () => {
+describe('Product Service - Edit Product', () => {
     let app: INestApplication
     let connection: DataSource
     let productService: ProductService
-    let data: IProductData[] | IProductObj = []
+    let initialProducts: any[]
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,50 +17,57 @@ describe('Product Service (edit)', () => {
         }).compile()
 
         app = moduleFixture.createNestApplication()
-        productService = app.get<ProductService>(ProductService)
+        productService = moduleFixture.get<ProductService>(ProductService)
         await app.init()
 
         connection = moduleFixture.get<DataSource>(DataSource)
     })
 
     afterAll(async () => {
-        await connection.synchronize(true)
         await app.close()
     })
 
     beforeEach(async () => {
-        // clear data
-        data = []
-        data = (await ProductFactory(productService, 5, true)) || []
+        await connection.synchronize(true)
+        initialProducts = (await ProductFactory(productService, 5, true)) || []
     })
 
     afterEach(async () => {
         await connection.synchronize(true)
     })
 
-    afterAll(async () => {
-        await app.close()
-    })
+    it('should update an existing product successfully', async () => {
+        // Arrange
+        const productToUpdate = initialProducts[0]
+        const newPrice = 3000
 
-    it('can edit the product', async () => {
-        // to make sure others data are not udpated
-        data[1] = await productService.updateProduct(data[1].id, {
-            price: 9000,
-        })
-        const editPrice = 3000
-        const result = await productService.updateProduct(data[0].id, {
-            price: editPrice,
-        })
-        let expectedResult = { ...data[0], price: editPrice }
-        expect(result).toMatchObject(expectedResult)
-
-        // make sure the data not change
-        expect(data[1].price).not.toEqual(expectedResult.price)
-    })
-
-    it("can't react to product not found", async () => {
-        await expect(productService.updateProduct(10000, {})).rejects.toThrow(
-            NotFoundException,
+        // Act
+        const updatedProduct = await productService.updateProduct(
+            productToUpdate.id,
+            { price: newPrice },
         )
+
+        // Assert
+        expect(updatedProduct).toBeDefined()
+        expect(updatedProduct.price).toEqual(newPrice)
+
+        // Verify other properties remain unchanged
+        const updatedProductInDb = await productService.findOne(
+            productToUpdate.id,
+        )
+        expect(updatedProductInDb.productCode).toEqual(
+            productToUpdate.productCode,
+        )
+        expect(updatedProductInDb.description).toEqual(
+            productToUpdate.description,
+        )
+        expect(updatedProductInDb.location).toEqual(productToUpdate.location)
+    })
+
+    it('should throw NotFoundException when updating a non-existing product', async () => {
+        // Act and Assert
+        await expect(
+            productService.updateProduct(10000, { price: 100 }),
+        ).rejects.toThrow(NotFoundException)
     })
 })

@@ -1,8 +1,8 @@
+import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe, ParseIntPipe, } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swagger'
-import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe, ParseIntPipe } from '@nestjs/common'
 import { CreateProductDto } from './dto/product-create.dto'
 import { ProductQueryParamsDto } from '@/products/dto/product-query-params.dto'
-import { ProductService, } from './product.service'
+import { ProductService } from './product.service'
 import { UpdateProductDto } from './dto/product-update.dto'
 
 @ApiTags('Products')
@@ -12,10 +12,12 @@ export class ProductsController {
 
     @ApiResponse({
         status: 200,
-        description: 'Find product',
+        description: 'Find products',
     })
     @Get()
-    async find(@Query(new ValidationPipe()) queryParams: ProductQueryParamsDto) {
+    async find(
+        @Query(new ValidationPipe()) queryParams: ProductQueryParamsDto,
+    ) {
         return await this.productService.find(queryParams)
     }
 
@@ -23,22 +25,21 @@ export class ProductsController {
     @ApiBearerAuth()
     @ApiResponse({
         status: 201,
-        description: 'Successfully create new product',
+        description: 'Successfully created new product',
         type: CreateProductDto,
     })
     @Post()
-    create(@Body() createProductDto: CreateProductDto) {
-        return this.productService.create(createProductDto)
+    async create(@Body() createProductDto: CreateProductDto) {
+        return await this.productService.create(createProductDto)
     }
 
     @ApiOperation({ summary: 'Update product' })
     @Put(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto) {
-        try {
-            return await this.productService.updateProduct(id, updateProductDto)
-        } catch (error) {
-            throw error
-        }
+    async update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() updateProductDto: UpdateProductDto,
+    ) {
+        return await this.productService.updateProduct(id, updateProductDto)
     }
 
     @ApiOperation({ summary: 'View product' })
@@ -46,5 +47,4 @@ export class ProductsController {
     async findOne(@Param('id', ParseIntPipe) id: number) {
         return await this.productService.findOne(id)
     }
-
 }

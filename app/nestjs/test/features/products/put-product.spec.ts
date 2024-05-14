@@ -26,17 +26,16 @@ describe('PUT /product', () => {
     it('can validate body data', async () => {
         app = await createApp((builder: TestingModuleBuilder) => {
             builder.overrideProvider(ProductService).useValue({
-                updateProduct: async () => {}
+                updateProduct: async () => {},
             })
 
             return builder
         })
 
-
         const response = await request(app.getHttpServer())
             .put('/api/v1/product/1')
             .send({
-                price: "Hello",
+                price: 'Hello',
                 code: null,
                 location: '',
                 description: '',
@@ -52,19 +51,19 @@ describe('PUT /product', () => {
     it('can show error message when no product found', async () => {
         app = await createApp((builder: TestingModuleBuilder) => {
             builder.overrideProvider(ProductService).useValue({
-                updateProduct: async () => { throw new NotFoundException('Product not found')  }
+                updateProduct: async () => {
+                    throw new NotFoundException('Product not found')
+                },
             })
 
             return builder
         })
 
         try {
-            const response = await request(app.getHttpServer()).put('/api/v1/product/1000')
+            const response = await request(app.getHttpServer()).put(
+                '/api/v1/product/1000',
+            )
             expect(response.statusCode).toBe(404)
-        } catch (err) {
-
-        }
-
+        } catch (err) {}
     })
-
 })

@@ -1,79 +1,72 @@
-import * as request from 'supertest'
-import { ProductService } from '@/products/product.service'
-import { createApp } from '@test/create-app'
-import { INestApplication } from '@nestjs/common'
-import { TestingModuleBuilder } from '@nestjs/testing'
+import * as request from 'supertest';
+import { ProductService } from '@/products/product.service';
+import { createApp } from '@test/create-app';
+import { INestApplication } from '@nestjs/common';
 
-describe('', () => {
-    let app: INestApplication
+jest.mock('@/products/product.service');
+
+describe('Product Creation Endpoint', () => {
+    let app: INestApplication;
 
     beforeAll(async () => {
-        app = await createApp()
-    })
+        app = await createApp();
+    });
 
-    it('can post to create product', async () => {
+    it('should create a product successfully', async () => {
+        // Arrange
         const createProductDto = {
             productCode: '1000',
             description: 'Sedan',
             location: 'West Malaysia',
             price: 300.0,
-        }
+        };
 
-        app = await createApp((b: TestingModuleBuilder) => {
-            b.overrideProvider(ProductService).useValue({
-                create: () => {
-                    return { id: 1, ...createProductDto }
-                },
-            })
-            return b
-        })
+        const productServiceMock = ProductService as jest.MockedClass<typeof ProductService>;
+        productServiceMock.prototype.create.mockResolvedValueOnce({ id: 1, ...createProductDto });
 
+        // Act
         const response = await request(app.getHttpServer())
             .post('/api/v1/product')
-            .send(createProductDto)
+            .send(createProductDto);
 
-        expect(response.statusCode).toBe(201)
+        // Assert
+        expect(response.statusCode).toBe(201);
+        expect(response.body).toEqual(expect.objectContaining(createProductDto));
+    });
 
-        expect(response.body).toHaveProperty('id')
-        expect(response.body.productCode).toBe(createProductDto.productCode)
-        expect(response.body.description).toBe(createProductDto.description)
-        expect(response.body.location).toBe(createProductDto.location)
-        expect(response.body.price).toBe(createProductDto.price)
-    })
+    it('should return validation errors for incomplete product data', async () => {
+        // Arrange
+        const createProductDto = {};
 
-    it('can validate error product data', async () => {
-        const createProductDto = {}
-
+        // Act
         const response = await request(app.getHttpServer())
             .post('/api/v1/product')
-            .send(createProductDto)
+            .send(createProductDto);
 
-        expect(response.statusCode).toBe(400)
-        expect(response.body.message).toContain('productCode should not be empty')
-        expect(response.body.message).toContain(
-            'description should not be empty',
-        )
-        expect(response.body.message).toContain('location should not be empty')
-        expect(response.body.message).toContain('price should not be empty')
-        expect(response.body.message).toContain(
-            'price must be a number conforming to the specified constraints',
-        )
-    })
+        // Assert
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toContain('productCode should not be empty');
+        expect(response.body.message).toContain('description should not be empty');
+        expect(response.body.message).toContain('location should not be empty');
+        expect(response.body.message).toContain('price should not be empty');
+    });
 
-    it('can validate price is number', async () => {
+    it('should return validation error for non-numeric price', async () => {
+        // Arrange
         const createProductDto = {
-            code: '1000',
+            productCode: '1000',
             description: 'Sedan',
             location: 'West Malaysia',
             price: 'add',
-        }
+        };
 
+        // Act
         const response = await request(app.getHttpServer())
             .post('/api/v1/product')
-            .send(createProductDto)
-        expect(response.statusCode).toBe(400)
-        expect(response.body.message).toContain(
-            'price must be a number conforming to the specified constraints',
-        )
-    })
-})
+            .send(createProductDto);
+
+        // Assert
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toContain('price must be a number conforming to the specified constraints');
+    });
+});
