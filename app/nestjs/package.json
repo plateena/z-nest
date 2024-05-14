@@ -73,12 +73,14 @@
             "^.+\\.(t|j)s$": "ts-jest"
         },
         "collectCoverageFrom": [
-            "src/**/*.(t|j)s"
+            "src/**/*.(t|j)s",
+            "!src/**/*.d.ts"
         ],
         "coverageDirectory": "../coverage",
         "coveragePathIgnorePatterns": [
             "typeorm.config.ts",
-            "<rootDir>/src/main.ts"
+            "<rootDir>/src/main.ts",
+            "\\.d\\.ts"
         ],
         "testEnvironment": "node"
     }
