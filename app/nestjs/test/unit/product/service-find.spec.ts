@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { DataSource } from 'typeorm'
 import { faker } from '@faker-js/faker'
 import { ProductService } from '@/products/product.service'
+import { ProductFactory } from '@test/factories/product.factory'
 
 describe('Product Service (find)', () => {
     let app: INestApplication
@@ -26,20 +27,7 @@ describe('Product Service (find)', () => {
     beforeEach(async () => {
         // clear data
         data = []
-        enum ELocation {
-            a = 'West Malaysia',
-            b = 'East Malaysia',
-        }
-        for (let i = 0; i < 10; i++) {
-            data.push({
-                code: faker.number.int({ min: 1000, max: 9999 }).toString(),
-                description: faker.word.noun({ length: { min: 5, max: 20 } }),
-                location: faker.helpers.enumValue(ELocation),
-                price: parseFloat(faker.finance.amount()),
-            })
-        }
-
-        await productService.productRepository.insert(data)
+        data = await ProductFactory(productService, 10, true) || []
     })
 
     afterEach(async () => {

@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { AppModule } from '@/app.module'
-import { INestApplication } from '@nestjs/common'
 import { DataSource } from 'typeorm'
+import { INestApplication } from '@nestjs/common'
 import { ProductService } from '@/products/product.service'
+import { Test, TestingModule } from '@nestjs/testing'
 
 describe('ProductService (create)', () => {
     let app: INestApplication
