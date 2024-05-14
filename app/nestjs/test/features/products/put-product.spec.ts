@@ -1,5 +1,5 @@
 import { ProductService } from '@/products/product.service'
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, NotFoundException } from '@nestjs/common'
 import { TestingModuleBuilder } from '@nestjs/testing'
 import { createApp } from '@test/create-app'
 import * as request from 'supertest'
@@ -49,5 +49,18 @@ describe('PUT /product', () => {
         )
     })
 
-    // @TODO: <zainundin: 14-05-2024> need to test the put with not found product
+    it('can show error message when no product found', async () => {
+        app = await createApp((builder: TestingModuleBuilder) => {
+            builder.overrideProvider(ProductService).useValue({
+                updateProduct: async () => { throw new NotFoundException('Product not found')  }
+            })
+
+            return builder
+        })
+
+        const response = await request(app.getHttpServer()).put('/api/v1/product/1000')
+
+        expect(response.statusCode).toBe(404)
+    })
+
 })
