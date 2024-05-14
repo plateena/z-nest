@@ -1,4 +1,3 @@
-import { Product } from '@/products/product.entity'
 import { ProductService } from '@/products/product.service'
 import { INestApplication } from '@nestjs/common'
 import { TestingModuleBuilder } from '@nestjs/testing'
@@ -49,4 +48,6 @@ describe('PUT /product', () => {
             'price must be a number conforming to the specified constraints',
         )
     })
+
+    // @TODO: <zainundin: 14-05-2024> need to test the put with not found product
 })

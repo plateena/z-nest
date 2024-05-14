@@ -1,5 +1,5 @@
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swagger'
-import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe, ParseIntPipe } from '@nestjs/common'
 import { CreateProductDto } from './dto/product-create.dto'
 import { ProductQueryParamsDto } from '@/products/dto/product-query-params.dto'
 import { ProductService, } from './product.service'
@@ -33,7 +33,14 @@ export class ProductsController {
 
     @ApiOperation({ summary: 'Update product' })
     @Put(':id')
-    async update(@Param() id: number, @Body() updateProductDto: UpdateProductDto) {
+    async update(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto) {
         return await this.productService.updateProduct(id, updateProductDto)
     }
+
+    @ApiOperation({ summary: 'View product' })
+    @Get(':id')
+    async findOne(@Param('id', ParseIntPipe) id: number) {
+        return await this.productService.findOne(id)
+    }
+
 }
