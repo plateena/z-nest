@@ -34,7 +34,11 @@ export class ProductsController {
     @ApiOperation({ summary: 'Update product' })
     @Put(':id')
     async update(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto) {
-        return await this.productService.updateProduct(id, updateProductDto)
+        try {
+            return await this.productService.updateProduct(id, updateProductDto)
+        } catch (error) {
+            throw error
+        }
     }
 
     @ApiOperation({ summary: 'View product' })
