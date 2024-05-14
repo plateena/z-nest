@@ -4,6 +4,8 @@ import { Product } from './product.entity'
 import { Repository } from 'typeorm'
 import { PageDataDto } from '@/page.dto'
 import { setQueryPagination } from '@/utils/set-query-pagination'
+import { ProductData } from './product.data'
+import { UpdateProductDto } from './dto/product-update.dto'
 
 @Injectable()
 export class ProductService {
@@ -41,6 +43,14 @@ export class ProductService {
 
     async findOne(id: number): Promise<Product> {
         return await this.productRepository.findOneBy({ id })
+    }
+
+    async updateProduct(id: number, updateProductDto: UpdateProductDto) {
+        let original = await this.productRepository.findOneBy({ id })
+        return await this.productRepository.save({
+            ...original,
+            ...updateProductDto,
+        })
     }
 }
 

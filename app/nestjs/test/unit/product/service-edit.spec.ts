@@ -1,15 +1,15 @@
-import { AppModule } from "@/app.module";
-import { DataSource } from "typeorm";
-import { INestApplication } from "@nestjs/common";
-import { ProductFactory } from "@test/factories/product.factory";
-import { ProductService } from "@/products/product.service";
-import { Test, TestingModule } from "@nestjs/testing";
+import { AppModule } from '@/app.module'
+import { DataSource } from 'typeorm'
+import { INestApplication } from '@nestjs/common'
+import { ProductFactory } from '@test/factories/product.factory'
+import { ProductService } from '@/products/product.service'
+import { Test, TestingModule } from '@nestjs/testing'
 
-describe("Product Service (edit)", () => {
+describe('Product Service (edit)', () => {
     let app: INestApplication
     let connection: DataSource
     let productService: ProductService
-    let data: IProductData[] = []
+    let data: IProductData[] | IProductObj = []
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -31,7 +31,7 @@ describe("Product Service (edit)", () => {
     beforeEach(async () => {
         // clear data
         data = []
-        data = await ProductFactory(productService, 5, true) || []
+        data = (await ProductFactory(productService, 5, true)) || []
     })
 
     afterEach(async () => {
@@ -42,7 +42,15 @@ describe("Product Service (edit)", () => {
         await app.close()
     })
 
+    it('can edit the product', async () => {
+        // to make sure others data are not udpated
+        data[1] = await productService.updateProduct(data[1].id, { price: 9000 })
+        const editPrice = 3000
+        const result = await productService.updateProduct(data[0].id, { price: editPrice })
+        let expectedResult = { ...data[0], price: editPrice }
+        expect(result).toMatchObject(expectedResult)
 
-    it("can edit the product", async () => {
-    });
-});
+        // make sure the data not change
+        expect(data[1].price).not.toEqual(expectedResult.price)
+    })
+})

@@ -5,7 +5,7 @@ export const ProductFactory = async (
     services: ProductService,
     dataCount = 1,
     toBeStore = false,
-): Promise<IProductData[]> => {
+): Promise<IProductObj[] | IProductData[]> => {
     let data: IProductData[] = []
     // clear data
     data = []
