@@ -15,6 +15,7 @@ export class ProductService {
     async find(queryParams?: IProductQueryParams) {
         let query: IQueryBuilderObj = {}
 
+        // set the pagination quer
         query = setQueryPagination(query, queryParams)
 
         if (queryParams?.filter?.code) {
@@ -28,12 +29,18 @@ export class ProductService {
         }
 
         const [data, total] = await this.productRepository.findAndCount(query)
+
+        // return with pageination data
         return new PageDataDto<Product>(data, total, query)
     }
 
     async create(productData: IProductData): Promise<Product> {
         const product = this.productRepository.create(productData)
         return this.productRepository.save(product)
+    }
+
+    async findOne(id: number): Promise<Product> {
+        return await this.productRepository.findOneBy({ id })
     }
 }
 
