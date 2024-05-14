@@ -20,14 +20,14 @@ export class ProductService {
         // set the pagination quer
         query = setQueryPagination(query, queryParams)
 
-        if (queryParams?.filter?.code) {
+        if (queryParams?.productCode) {
             createWhere(query)
-            query.where.code = queryParams.filter.code
+            query.where.productCode = queryParams.productCode
         }
 
-        if (queryParams?.filter?.location) {
+        if (queryParams?.location) {
             createWhere(query)
-            query.where.location = queryParams.filter.location
+            query.where.location = queryParams.location
         }
 
         const [data, total] = await this.productRepository.findAndCount(query)

@@ -1,6 +1,6 @@
 declare global {
     interface IProductData {
-        code: string
+        productCode: string
         description: string
         location: string
         price: number
@@ -15,12 +15,8 @@ declare global {
     }
 
     interface IProductQueryParams extends IPaginationQueryParams {
-        filter?: {
-            code?: string
-            location?: string
-        }
-        'filter[code]'?: string
-        'filter[location]'?: string
+        productCode?: string
+        location?: string
     }
 
     interface IQueryBuilderObj {
@@ -29,7 +25,7 @@ declare global {
         page?: number
         where?: {
             location?: string
-            code?: string
+            productCode?: string
         }
     }
 }

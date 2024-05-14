@@ -10,7 +10,7 @@ export class ProductData {
     })
     @Column()
     @IsNotEmpty()
-    code: string
+    productCode: string
 
     @ApiProperty({
         description: "The product description",

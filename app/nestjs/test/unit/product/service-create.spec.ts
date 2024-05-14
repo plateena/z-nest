@@ -29,7 +29,7 @@ describe('ProductService (create)', () => {
 
         // Test data
         const productData = {
-            code: '1000',
+            productCode: '1000',
             description: 'Test Product',
             location: 'Test Location',
             price: 100.0,
@@ -40,7 +40,7 @@ describe('ProductService (create)', () => {
 
         // Assert that the product was created correctly
         expect(createdProduct).toBeDefined()
-        expect(createdProduct.code).toEqual(productData.code)
+        expect(createdProduct.productCode).toEqual(productData.productCode)
         expect(createdProduct.description).toEqual(productData.description)
         expect(createdProduct.location).toEqual(productData.location)
         expect(createdProduct.price).toEqual(productData.price)

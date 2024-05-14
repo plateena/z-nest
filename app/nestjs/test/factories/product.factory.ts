@@ -15,7 +15,7 @@ export const ProductFactory = async (
     }
     for (let i = 0; i < dataCount; i++) {
         data.push({
-            code: faker.number.int({ min: 1000, max: 9999 }).toString(),
+            productCode: faker.number.int({ min: 1000, max: 9999 }).toString(),
             description: faker.word.noun({ length: { min: 5, max: 20 } }),
             location: faker.helpers.enumValue(ELocation),
             price: parseFloat(faker.finance.amount()),

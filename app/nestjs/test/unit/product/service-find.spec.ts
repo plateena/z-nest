@@ -27,7 +27,7 @@ describe('Product Service (find)', () => {
     beforeEach(async () => {
         // clear data
         data = []
-        data = await ProductFactory(productService, 10, true) || []
+        data = (await ProductFactory(productService, 10, true)) || []
     })
 
     afterEach(async () => {
@@ -50,7 +50,7 @@ describe('Product Service (find)', () => {
     })
 
     it('can find by code', async () => {
-        let rs = await productService.find({ filter: { code: data[0].code } })
+        let rs = await productService.find({ productCode: data[0].productCode })
 
         // need to conver price to string becauuse the result json in string
         let check = convertPriceToString(data[0])
@@ -59,13 +59,14 @@ describe('Product Service (find)', () => {
 
         //  make sure our result match found result
         expect(rs.data).toHaveLength(
-            data.filter((product) => product.code == data[0].code).length,
+            data.filter((product) => product.productCode == data[0].productCode)
+                .length,
         )
     })
 
     it('can find by location', async () => {
         let rs = await productService.find({
-            filter: { location: data[0].location },
+            location: data[0].location,
         })
         // need to conver price to string becauuse the result json in string
         let check = convertPriceToString(data[0])
@@ -80,10 +81,8 @@ describe('Product Service (find)', () => {
 
     it('can find by both location and code', async () => {
         let rs = await productService.find({
-            filter: {
                 location: data[0].location,
-                code: data[0].code,
-            },
+                productCode: data[0].productCode,
         })
 
         // need to conver price to string becauuse the result json in string
@@ -95,7 +94,7 @@ describe('Product Service (find)', () => {
             data.filter((product) => {
                 return (
                     product.location == data[0].location &&
-                    product.code == data[0].code
+                    product.productCode == data[0].productCode
                 )
             }).length,
         )

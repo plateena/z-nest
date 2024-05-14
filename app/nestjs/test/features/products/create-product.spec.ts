@@ -13,7 +13,7 @@ describe('', () => {
 
     it('can post to create product', async () => {
         const createProductDto = {
-            code: '1000',
+            productCode: '1000',
             description: 'Sedan',
             location: 'West Malaysia',
             price: 300.0,
@@ -35,7 +35,7 @@ describe('', () => {
         expect(response.statusCode).toBe(201)
 
         expect(response.body).toHaveProperty('id')
-        expect(response.body.code).toBe(createProductDto.code)
+        expect(response.body.productCode).toBe(createProductDto.productCode)
         expect(response.body.description).toBe(createProductDto.description)
         expect(response.body.location).toBe(createProductDto.location)
         expect(response.body.price).toBe(createProductDto.price)
@@ -49,7 +49,7 @@ describe('', () => {
             .send(createProductDto)
 
         expect(response.statusCode).toBe(400)
-        expect(response.body.message).toContain('code should not be empty')
+        expect(response.body.message).toContain('productCode should not be empty')
         expect(response.body.message).toContain(
             'description should not be empty',
         )
