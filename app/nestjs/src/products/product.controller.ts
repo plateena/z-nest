@@ -9,7 +9,7 @@ import { Roles } from '@/decorators/role.decorator'
 
 @ApiTags('Products')
 @UseGuards(RolesGuard)
-@Controller('product')
+@Controller()
 export class ProductsController {
     constructor(private productService: ProductService) {}
 
@@ -24,6 +24,7 @@ export class ProductsController {
         return await this.productService.find(queryParams)
     }
 
+    @ApiBearerAuth('access-token')
     @ApiOperation({ summary: 'Create product' })
     @Roles('admin')
     @ApiResponse({
@@ -37,6 +38,7 @@ export class ProductsController {
         return await this.productService.create(createProductDto)
     }
 
+    @ApiBearerAuth('access-token')
     @ApiOperation({ summary: 'Update product' })
     @Roles('admin')
     @Put(':id')

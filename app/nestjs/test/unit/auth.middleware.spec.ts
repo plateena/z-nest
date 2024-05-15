@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { generateFakeToken } from '@/utils/gen-fake-token'
+import { generateFakeToken } from '@test/utils/gen-fake-token'
 import { TestModule } from '@test/test.module'
 
 describe('AuthMiddleware', () => {

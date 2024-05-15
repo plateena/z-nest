@@ -10,6 +10,8 @@ import { apiRoutes } from '@/routes/api-route'
 import { JwtModule } from '@nestjs/jwt'
 import { AuthMiddleware } from '@/middleware/auth.middleware'
 import { RolesGuard } from './guards/role.guards'
+import { TokenModule } from './token/token.module'
+import { getJWTConfig } from './config/jwt.config'
 
 @Module({
     imports: [
@@ -18,6 +20,7 @@ import { RolesGuard } from './guards/role.guards'
             imports: [
                 ConfigModule,
                 ProductModule,
+                TokenModule,
                 RouterModule.register(apiRoutes),
             ],
             inject: [ConfigService],
@@ -26,16 +29,16 @@ import { RolesGuard } from './guards/role.guards'
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_SECRET'),
-            }),
+            useFactory: async () => await getJWTConfig(),
         }),
     ],
     controllers: [AppController],
-    providers: [{
-        provide: APP_GUARD,
-        useClass: RolesGuard
-    }],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: RolesGuard,
+        },
+    ],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

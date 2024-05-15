@@ -67,9 +67,10 @@
         ],
         "coverageDirectory": "../coverage",
         "coveragePathIgnorePatterns": [
-            "typeorm.config.ts",
             "<rootDir>/src/main.ts",
-            "\\.d\\.ts"
+            "\\.d\\.ts",
+            "<rootDir>/src/config/.*\\.ts",
+            "<rootDir>/src/token/.*\\.ts"
         ],
         "moduleFileExtensions": [
             "js",
