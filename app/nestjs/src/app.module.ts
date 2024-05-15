@@ -4,11 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { getTypeOrmConfig } from '@/config/typeorm.config'
 import { DataSource } from 'typeorm'
-import { RouterModule } from '@nestjs/core'
+import { APP_GUARD, RouterModule } from '@nestjs/core'
 import { ProductModule } from '@/products/product.module'
 import { apiRoutes } from '@/routes/api-route'
-import { RoleMiddleware } from './middleware/role-middleware'
 import { JwtModule } from '@nestjs/jwt'
+import { AuthMiddleware } from '@/middleware/auth.middleware'
+import { RolesGuard } from './guards/role.guards'
 
 @Module({
     imports: [
@@ -31,11 +32,14 @@ import { JwtModule } from '@nestjs/jwt'
         }),
     ],
     controllers: [AppController],
-    providers: [],
+    providers: [{
+        provide: APP_GUARD,
+        useClass: RolesGuard
+    }],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(RoleMiddleware).forRoutes('*')
+        consumer.apply(AuthMiddleware).forRoutes('*')
     }
     constructor(private dataSource: DataSource) {}
 }

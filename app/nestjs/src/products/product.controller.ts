@@ -1,11 +1,14 @@
-import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe, ParseIntPipe, } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe, ParseIntPipe, UseGuards, } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swagger'
 import { CreateProductDto } from './dto/product-create.dto'
 import { ProductQueryParamsDto } from '@/products/dto/product-query-params.dto'
 import { ProductService } from './product.service'
 import { UpdateProductDto } from './dto/product-update.dto'
+import { RolesGuard } from '@/guards/role.guards'
+import { Roles } from '@/decorators/role.decorator'
 
 @ApiTags('Products')
+@UseGuards(RolesGuard)
 @Controller('product')
 export class ProductsController {
     constructor(private productService: ProductService) {}
@@ -28,12 +31,14 @@ export class ProductsController {
         description: 'Successfully created new product',
         type: CreateProductDto,
     })
+    @Roles('admin')
     @Post()
     async create(@Body() createProductDto: CreateProductDto) {
         return await this.productService.create(createProductDto)
     }
 
     @ApiOperation({ summary: 'Update product' })
+    @Roles('admin')
     @Put(':id')
     async update(
         @Param('id', ParseIntPipe) id: number,
@@ -43,6 +48,7 @@ export class ProductsController {
     }
 
     @ApiOperation({ summary: 'View product' })
+    @Roles('admin')
     @Get(':id')
     async findOne(@Param('id', ParseIntPipe) id: number) {
         return await this.productService.findOne(id)

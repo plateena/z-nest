@@ -10,7 +10,7 @@ import { UpdateProductDto } from './dto/product-update.dto';
 export class ProductService {
     constructor(
         @InjectRepository(Product)
-        private readonly productRepository: Repository<Product>,
+        public readonly productRepository: Repository<Product>,
     ) {}
 
     async find(queryParams?: IProductQueryParams): Promise<PageDataDto<Product>> {
