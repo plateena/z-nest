@@ -1,8 +1,9 @@
-import { ProductService } from '@/products/product.service'
+import * as request from 'supertest'
 import { INestApplication, NotFoundException } from '@nestjs/common'
+import { ProductService } from '@/products/product.service'
 import { TestingModuleBuilder } from '@nestjs/testing'
 import { createApp } from '@test/create-app'
-import * as request from 'supertest'
+import { spyOnRoleGuard } from '@test/utils/spy.role'
 
 describe('PUT /product', () => {
     let app: INestApplication
@@ -15,6 +16,8 @@ describe('PUT /product', () => {
 
             return builder
         })
+
+        spyOnRoleGuard('admin')
 
         const response = await request(app.getHttpServer()).put(
             '/api/v1/product/1',
