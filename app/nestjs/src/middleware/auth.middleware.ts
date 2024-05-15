@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, _: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
 
     if (authHeader && authHeader.startsWith('Bearer ')) {

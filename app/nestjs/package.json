@@ -61,6 +61,16 @@
     },
     "jest": {
         "rootDir": "/usr/src/app",
+        "collectCoverageFrom": [
+            "src/**/*.(t|j)s",
+            "!src/**/*.d.ts"
+        ],
+        "coverageDirectory": "../coverage",
+        "coveragePathIgnorePatterns": [
+            "typeorm.config.ts",
+            "<rootDir>/src/main.ts",
+            "\\.d\\.ts"
+        ],
         "moduleFileExtensions": [
             "js",
             "json",
@@ -74,16 +84,6 @@
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
         },
-        "collectCoverageFrom": [
-            "src/**/*.(t|j)s",
-            "!src/**/*.d.ts"
-        ],
-        "coverageDirectory": "../coverage",
-        "coveragePathIgnorePatterns": [
-            "typeorm.config.ts",
-            "<rootDir>/src/main.ts",
-            "\\.d\\.ts"
-        ],
         "testEnvironment": "node"
     }
 }

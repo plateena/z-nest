@@ -25,7 +25,7 @@ export class ProductsController {
     }
 
     @ApiOperation({ summary: 'Create product' })
-    @ApiBearerAuth()
+    @Roles('admin')
     @ApiResponse({
         status: 201,
         description: 'Successfully created new product',
@@ -48,7 +48,6 @@ export class ProductsController {
     }
 
     @ApiOperation({ summary: 'View product' })
-    @Roles('admin')
     @Get(':id')
     async findOne(@Param('id', ParseIntPipe) id: number) {
         return await this.productService.findOne(id)

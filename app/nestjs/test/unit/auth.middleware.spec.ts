@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { INestApplication, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import * as request from 'supertest';
-import { AuthMiddleware } from '@/middleware/auth.middleware'
-import { JwtModule } from '@nestjs/jwt'
 import { generateFakeToken } from '@/utils/gen-fake-token'
 import { TestModule } from '@test/test.module'
 
