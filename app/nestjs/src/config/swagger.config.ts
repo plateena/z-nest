@@ -1,20 +1,36 @@
 import { DocumentBuilder } from '@nestjs/swagger'
 
 export const swaggerConfig = new DocumentBuilder()
-    .setTitle('NestJS Motor Insurance')
+    .setTitle('NestJS Motor Insurance API')
     .setDescription(
-        'The API documentation. Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.',
+        `This documentation provides a comprehensive guide to using the NestJS Motor Insurance API.
+        <br/><br/>
+        <H2>Authorization</H2>
+        <ul>
+            <li>Use the authentication endpoint to obtain an access token.</li>
+            <li>Send a request with the body: { "password": "******" } (use the password specified in your environment configuration).</li>
+            <li>You will receive a response containing the access token.</li>
+            <li>Click on the [Authorize] button.</li>
+            <li>Enter the token in the input field and click [Authorize] to authenticate your requests.</li>
+        </ul>
+        `
     )
+    .setContact(
+        'API Support',
+        'http://example.com/support',
+        'support@example.com'
+    )
+    .setTermsOfService('http://example.com/terms')
     .addBearerAuth(
         {
-            description: `[just text field] Please enter token in following format: Bearer <JWT>`,
+            description: `Enter the token in the following format: Bearer [JWT]`,
             name: 'Authorization',
             bearerFormat: 'Bearer',
             scheme: 'Bearer',
             type: 'http',
-            in: 'Header',
+            in: 'header',
         },
         'access-token',
     )
     .setVersion('1.0')
-    .build()
+    .build();
