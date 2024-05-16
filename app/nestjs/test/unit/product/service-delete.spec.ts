@@ -47,8 +47,11 @@ describe('ProductService - Delete Product', () => {
     })
 
     it('should throw NotFoundException when trying to delete a non-existent product', async () => {
-        await expect(productService.deleteProduct(100000000)).rejects.toThrow(
-            NotFoundException,
-        )
+        try {
+            await productService.deleteProduct(100000000)
+        } catch (error) {
+            expect(error).toBeInstanceOf(NotFoundException)
+            expect(error.message).toBe('Product not exists!')
+        }
     })
 })

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe, ParseIntPipe, UseGuards, } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Put, Query, ValidationPipe, ParseIntPipe, UseGuards, Delete, } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swagger'
 import { CreateProductDto } from './dto/product-create.dto'
 import { ProductQueryParamsDto } from '@/products/dto/product-query-params.dto'
@@ -54,4 +54,13 @@ export class ProductsController {
     async findOne(@Param('id', ParseIntPipe) id: number) {
         return await this.productService.findOne(id)
     }
+
+    @ApiBearerAuth('access-token')
+    @ApiOperation({ summary: "Delete product" })
+    @Roles('admin')
+    @Delete(":id")
+    async deleteProduct(@Param('id', ParseIntPipe) id: number) {
+        return await this.productService.deleteProduct(id)
+    }
+
 }

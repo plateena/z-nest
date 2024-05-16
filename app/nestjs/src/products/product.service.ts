@@ -43,7 +43,7 @@ export class ProductService {
     async findOne(id: number): Promise<Product> {
         const product = await this.productRepository.findOneBy({id});
         if (!product) {
-            throw new NotFoundException('Product not found');
+            throw new NotFoundException('Product not exists!');
         }
         return product;
     }
@@ -53,9 +53,12 @@ export class ProductService {
         return this.productRepository.save({ ...product, ...updateProductDto });
     }
 
-    async deleteProduct(id: number): Promise<void> {
+    async deleteProduct(id: number): Promise<any> {
         const product = await this.findOne(id);
-        await this.productRepository.remove(product);
+        if (!product) {
+            throw new NotFoundException('Product not exists!')
+        }
+        return await this.productRepository.remove(product);
     }
 }
 

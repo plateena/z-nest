@@ -26,7 +26,7 @@ describe('PUT /product', () => {
         expect(response.statusCode).toBe(200)
     })
 
-    it('can validate body data', async () => {
+    it('should validate body data', async () => {
         app = await createApp((builder: TestingModuleBuilder) => {
             builder.overrideProvider(ProductService).useValue({
                 updateProduct: async () => {},
@@ -51,7 +51,7 @@ describe('PUT /product', () => {
         )
     })
 
-    it('can show error message when no product found', async () => {
+    it('should show error message when no product found', async () => {
         app = await createApp((builder: TestingModuleBuilder) => {
             builder.overrideProvider(ProductService).useValue({
                 updateProduct: async () => {
